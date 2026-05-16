@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DSPxLab Display Real Project Layout v7 - UI Color Bright VU</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090e; --bg2:#06080c; --panel:#07090e; --panel2:#0a1420;
+  --border:#141820; --blue:#4a9eff; --green:#40e090; --gold:#f0c030;
+  --violet:#e060ff; --txt:#d6e1f2; --txt2:#5c6b86; --txt3:#3a4658; --txt4:#8ea3c5;
+  --vuGreen:#50e890; --vuAmber:#f0c030; --vuRed:#d86a6a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;min-height:100%;background:#05070b;color:var(--txt);font-family:'Exo 2',system-ui,sans-serif}
+body{display:flex;align-items:center;justify-content:center;padding:18px}
+.shell{display:flex;flex-direction:column;align-items:center;gap:12px;width:min(100%,980px)}
+#disp{
+  width:820px;max-width:100%;aspect-ratio:820/320;background:var(--bg);
+  border:1px solid #1c2130;border-radius:5px;overflow:hidden;position:relative;
+  display:grid;grid-template-columns:72px 676px 72px;box-shadow:0 20px 80px rgba(0,0,0,.45);
+}
+.vu{height:320px;background:radial-gradient(circle at 50% 50%,#0c111a 0%,var(--bg2) 70%);position:relative;display:flex;flex-direction:column;align-items:center}
+.vu.left{border-right:1px solid var(--border)} .vu.right{border-left:1px solid var(--border)}
+.vu-name{font-size:12px;color:var(--txt4);font-weight:600;letter-spacing:.8px;margin-top:8px;height:18px}
+.vu-track{position:absolute;top:34px;bottom:34px;width:34px;display:flex;flex-direction:column-reverse;gap:2px;padding:1px;background:rgba(0,0,0,.18);border:1px solid rgba(60,90,130,.28);border-radius:3px;overflow:hidden;box-shadow:inset 0 0 10px rgba(0,0,0,.75)}
+.vu-seg{flex:1;min-height:3px;border-radius:2px;background:#111826;box-shadow:inset 0 0 0 1px rgba(80,100,130,.12);transition:background .035s linear,box-shadow .035s linear,opacity .035s linear;opacity:.86}
+.vu-seg.on.green{background:var(--vuGreen);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);opacity:1}
+.vu-seg.on.amber{background:var(--vuAmber);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);opacity:1}
+.vu-seg.on.red{background:var(--vuRed);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);opacity:1}
+.vu-seg.peak{outline:1px solid rgba(214,225,242,.62);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)!important;filter:none}
+
+.vu-db{position:absolute;bottom:8px;font-size:10px;color:var(--txt2);font-weight:500}
+.center{width:676px;height:320px;display:grid;grid-template-columns:136px 404px 136px;background:var(--bg)}
+.side{height:320px;background:var(--panel);padding:6px;display:flex;flex-direction:column;gap:1px;overflow:hidden}
+.side.inputs{border-right:1px solid var(--border)} .side.presets{border-left:1px solid var(--border);gap:4px}
+.src-row,.preset-row{width:100%;border-left:3px solid var(--border);background:transparent;color:var(--txt3);transition:background .12s,color .12s,border-color .12s;cursor:pointer;user-select:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.src-row{font-size:16px;line-height:1;padding:5px 4px 5px 8px;min-height:30px;font-weight:500;letter-spacing:.2px}
+.src-row.active{color:var(--blue);border-left-color:var(--blue);background:var(--panel2)}
+.src-row:hover,.preset-row:hover{background:#0c1018;color:#71809a}
+.preset-row{font-size:18px;line-height:1;padding:10px 4px 10px 10px;min-height:43px;font-weight:600;letter-spacing:.1px}
+.preset-row.loaded{color:#e4eaf5}.preset-row.active{color:var(--blue);border-left-color:var(--blue);background:var(--panel2)}
+.vol-zone{position:relative;width:404px;height:320px;background:var(--bg);overflow:hidden}
+.status-left{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;z-index:2}
+.status-left .wifi{font-size:12px;color:var(--txt4);font-weight:500}.status-left .dspx{font-size:12px;color:var(--txt2);font-weight:500}.status-left .ok{color:var(--green)}
+.src-main{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-size:28px;line-height:1.1;color:var(--blue);font-weight:600;letter-spacing:.3px;max-width:176px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status-right{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px;align-items:flex-end;text-align:right;z-index:2}
+.status-right .info{font-size:14px;color:var(--txt2);font-weight:500;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.status-right .dsp{font-size:12px;color:var(--txt2);font-weight:500}
+.seven-wrap{position:absolute;width:238px;height:92px;left:50%;top:70px;transform:translateX(-50%)}
+.digit{position:absolute}.seg{position:absolute;background:var(--txt);border-radius:6px;opacity:.16;transition:opacity .1s}.seg.on{opacity:1;box-shadow:0 0 12px rgba(214,225,242,.12)}
+.vol-unit{position:absolute;left:0;right:0;top:172px;text-align:center;font-size:16px;color:var(--txt2);font-weight:500;letter-spacing:.5px}
+.bar{position:absolute;left:50%;top:201px;transform:translateX(-50%);width:331px;height:18px;border-radius:7px;background:#172033;border:1px solid #2a3a58;overflow:hidden}.bar-fill{height:100%;width:62%;border-radius:7px;background:var(--blue);transition:width .12s}
+.preset-active{position:absolute;top:234px;left:0;right:0;text-align:center;font-size:16px;color:var(--txt4);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 12px}
+.relay-box{position:absolute;left:1px;right:1px;bottom:2px;height:72px}.relay-grid{position:absolute;left:50%;top:7px;transform:translateX(-50%);display:grid;grid-template-columns:repeat(4,56px);grid-auto-rows:22px;gap:10px 10px}.rly{font-size:14px;line-height:22px;text-align:center;border:1px solid;border-radius:4px;font-weight:600;letter-spacing:.1px;background:rgba(255,255,255,.03);opacity:.96}.rly.off{opacity:0;pointer-events:none}.tw{color:#60c8ff;border-color:#245c86;background:rgba(96,200,255,.08)}.mid{color:var(--gold);border-color:#705010;background:rgba(240,192,48,.08)}.wf{color:#50e890;border-color:#106830;background:rgba(80,232,144,.08)}.sw{color:var(--violet);border-color:#5a1080;background:rgba(224,96,255,.08)}
+.controls{width:820px;max-width:100%;display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;color:#8090a8;font-size:13px}.hint{opacity:.7}.btn{border:1px solid #1f3558;background:#0d1421;color:#b8c8e6;border-radius:6px;padding:7px 10px;font-family:inherit;cursor:pointer}.btn:hover{border-color:var(--blue);color:#fff}.small{font-size:12px;color:#63738d}
+@media(max-width:860px){body{padding:8px}.controls{grid-template-columns:1fr 1fr}.hint{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div id="disp">
+    <div class="vu left"><div class="vu-name">L</div><div class="vu-track" id="vuLSegs"></div><div class="vu-db" id="vuLDb">min</div></div>
+    <div class="center">
+      <div class="side inputs" id="inputs"></div>
+      <div class="vol-zone">
+        <div class="status-left"><div class="wifi" id="wifi">WiFi off</div><div class="dspx" id="dspx">DSPx --</div></div>
+        <div class="src-main" id="srcMain">CD</div>
+        <div class="status-right"><div class="info" id="info">Analog input</div><div class="dsp" id="dspInfo">48kHz 24bit PCM</div></div>
+        <div class="seven-wrap" id="seven"></div>
+        <div class="vol-unit">dB</div>
+        <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+        <div class="preset-active" id="presetActive">Preset attivo: 3 vie stereo</div>
+        <div class="relay-box"><div class="relay-grid" id="relays"></div></div>
+      </div>
+      <div class="side presets" id="presets"></div>
+    </div>
+    <div class="vu right"><div class="vu-name">R</div><div class="vu-track" id="vuRSegs"></div><div class="vu-db" id="vuRDb">min</div></div>
+  </div>
+  <div class="controls">
+    <div class="hint">Layout reale firmware: VU laterali a trattini, ingressi 136px, volume centrale 404px, preset 136px. Nessuna top/bottom bar.</div>
+    <button class="btn" id="simBtn">Simula WS</button>
+    <button class="btn" id="presetBtn">Preset +</button>
+    <button class="btn" id="srcBtn">Sorgente +</button>
+  </div>
+  <div class="small">Mouse wheel: volume · click su sorgenti/preset. In locale usa VU simulati; via browser su ESP32 può ricevere frame WS opcode 0x20.</div>
+</div>
+<script>
+const SOURCE_COUNT=8, MAX_PRESETS=6;
+const SRC_DISPLAY=['RADIO','CD','PHONO','TAPE','TOSLINK','S/PDIF','USB','BLUETOOTH'];
+const SRC_INFO=['Analog input','Analog input','Analog input','Analog input','Optical digital','Coax digital','USB audio','Bluetooth audio'];
+const SRC_SHORT=i=>i===7?'BT':SRC_DISPLAY[i];
+const SR=['48kHz','96kHz','192kHz','44.1kHz'];
+let state={source:1,activePreset:0,volume:-30,vuL:.05,vuR:.05,wifi:'WiFi off',dspx:false,srIdx:0,relays:{tw:true,mid:true,wf:true,sw:true}};
+let presets=[
+  {loaded:true,name:'3 vie stereo',relay1:0,relay2:0,desc:'3 vie stereo'},
+  {loaded:true,name:'RS225TL+AMT-1',relay1:0,relay2:1,desc:'RS225TL+AMT-1'},
+  {loaded:true,name:'OB 3VIE',relay1:0,relay2:1,desc:'OB 3VIE'},
+  {loaded:false,name:'',desc:''},{loaded:false,name:'',desc:''},{loaded:false,name:'',desc:''}
+];
+function el(id){return document.getElementById(id)}
+function makeDigit(x,y,w,h,t,idx){
+  const d=document.createElement('div');d.className='digit';d.style.left=x+'px';d.style.top=y+'px';d.style.width=w+'px';d.style.height=h+'px';d.dataset.idx=idx;
+  const hlen=w-2*t, vlen=(h-3*t)/2;
+  const pos=[[t,0,hlen,t],[w-t,t,t,vlen],[w-t,2*t+vlen,t,vlen],[t,h-t,hlen,t],[0,2*t+vlen,t,vlen],[0,t,t,vlen],[t,t+vlen,hlen,t]];
+  pos.forEach((p,i)=>{const s=document.createElement('div');s.className='seg';s.dataset.seg=i;s.style.left=p[0]+'px';s.style.top=p[1]+'px';s.style.width=p[2]+'px';s.style.height=p[3]+'px';d.appendChild(s)});
+  el('seven').appendChild(d);
+}
+makeDigit(0,25,40,50,8,0);makeDigit(58,0,66,88,10,1);makeDigit(148,0,66,88,10,2);
+const digitMap=[[1,1,1,1,1,1,0],[0,1,1,0,0,0,0],[1,1,0,1,1,0,1],[1,1,1,1,0,0,1],[0,1,1,0,0,1,1],[1,0,1,1,0,1,1],[1,0,1,1,1,1,1],[1,1,1,0,0,0,0],[1,1,1,1,1,1,1],[1,1,1,1,0,1,1]];
+function setDigit(idx,val){document.querySelectorAll(`.digit[data-idx="${idx}"] .seg`).forEach((s,i)=>s.classList.toggle('on',val==='minus'?i===6:(val>=0&&digitMap[val][i])))}
+function drawVolume(){let v=Math.max(0,Math.min(99,Math.abs(Math.round(state.volume))));setDigit(0,'minus');setDigit(1,v>=10?Math.floor(v/10):-1);setDigit(2,v%10);el('barFill').style.width=((state.volume+80)/80*100)+'%'}
+function drawInputs(){const c=el('inputs');c.innerHTML='';SRC_DISPLAY.forEach((n,i)=>{let d=document.createElement('div');d.className='src-row'+(i===state.source?' active':'');d.textContent=n;d.onclick=()=>{state.source=i;drawAll()};c.appendChild(d)})}
+function drawPresets(){const c=el('presets');c.innerHTML='';for(let i=0;i<MAX_PRESETS;i++){let d=document.createElement('div');d.className='preset-row'+(i===state.activePreset?' active':'')+(presets[i].loaded?' loaded':'');d.textContent='PRESET '+(i+1);d.onclick=()=>{state.activePreset=i;applyPresetRelay();drawAll()};c.appendChild(d)}}
+function activePresetText(){let p=presets[state.activePreset];return 'Preset attivo: '+(p.loaded?(p.desc||p.name||('PRESET '+(state.activePreset+1))):('PRESET '+(state.activePreset+1)))}
+function applyPresetRelay(){const p=presets[state.activePreset];if(!p.loaded)return;state.relays.tw=!(p.relay1&8);state.relays.mid=!(p.relay1&16);state.relays.wf=!(p.relay1&32);state.relays.sw=!(p.relay2&1)}
+function drawRelays(){const c=el('relays');c.innerHTML='';[['TWL','tw'],['MIDL','mid'],['WFL','wf'],['SWL','sw'],['TWR','tw'],['MIDR','mid'],['WFR','wf'],['SWR','sw']].forEach(([txt,k])=>{let d=document.createElement('div');d.className='rly '+(k==='tw'?'tw':k==='mid'?'mid':k==='wf'?'wf':'sw')+(state.relays[k]?'':' off');d.textContent=txt;c.appendChild(d)})}
+const VU_SEGS=28;let vuPeak={L:0,R:0};
+function buildVU(){['L','R'].forEach(ch=>{const c=el(ch==='L'?'vuLSegs':'vuRSegs');c.innerHTML='';for(let i=0;i<VU_SEGS;i++){const d=document.createElement('div');d.className='vu-seg';c.appendChild(d)}})}
+function dbToSeg(val){const db=20*Math.log10(Math.max(val,1e-6));return Math.max(0,Math.min(VU_SEGS,Math.floor((db+60)/60*VU_SEGS)))}
+function drawVU(side,val){const segs=el(side==='L'?'vuLSegs':'vuRSegs').children;const active=dbToSeg(val);vuPeak[side]=Math.max(val,vuPeak[side]*0.982);const peakIdx=Math.max(0,Math.min(VU_SEGS-1,dbToSeg(vuPeak[side])-1));const db=val>1e-5?Math.round(20*Math.log10(val)):-99;for(let i=0;i<VU_SEGS;i++){const sg=segs[i];sg.className='vu-seg';if(i<active){sg.classList.add('on');sg.classList.add(i>VU_SEGS*.85?'red':(i>VU_SEGS*.72?'amber':'green'))}if(i===peakIdx&&vuPeak[side]>.01)sg.classList.add('peak')}el(side==='L'?'vuLDb':'vuRDb').textContent=db<=-90?'min':db+'dB'}
+function drawAll(){drawInputs();drawPresets();drawVolume();el('srcMain').textContent=SRC_SHORT(state.source);el('info').textContent=SRC_INFO[state.source];el('dspInfo').textContent=SR[state.srIdx&3]+' 24bit PCM';el('wifi').textContent=state.wifi;el('dspx').textContent=state.dspx?'DSPx OK':'DSPx --';el('dspx').classList.toggle('ok',state.dspx);el('presetActive').textContent=activePresetText();drawRelays();drawVU('L',state.vuL);drawVU('R',state.vuR)}
+let sim=true;function simTick(){if(sim){state.vuL=Math.max(.02,Math.min(.96,state.vuL*.75+Math.random()*.36));state.vuR=Math.max(.02,Math.min(.96,state.vuR*.75+Math.random()*.36));state.wifi='WiFi -54dBm';state.dspx=true;drawVU('L',state.vuL);drawVU('R',state.vuR);el('wifi').textContent=state.wifi;el('dspx').textContent='DSPx OK';el('dspx').classList.add('ok')}}
+buildVU();setInterval(simTick,70);drawAll();
+document.addEventListener('wheel',e=>{state.volume+=e.deltaY>0?-1:1;state.volume=Math.max(-80,Math.min(0,state.volume));drawVolume()},{passive:true});
+el('srcBtn').onclick=()=>{state.source=(state.source+1)%SOURCE_COUNT;drawAll()};el('presetBtn').onclick=()=>{state.activePreset=(state.activePreset+1)%MAX_PRESETS;applyPresetRelay();drawAll()};el('simBtn').onclick=()=>{sim=!sim;el('simBtn').textContent=sim?'Simula WS':'Sim OFF'};
+// WebSocket compatibility with ESP32 frame opcode 0x20.
+let ws=null;function wsConnect(ip,port){try{ws=new WebSocket('ws://'+(ip||location.hostname||'192.168.1.100')+':'+(port||8087)+'/ws');ws.binaryType='arraybuffer';ws.onopen=()=>{sim=false;state.wifi='WiFi OK';drawAll()};ws.onclose=()=>{if(location.protocol!=='file:')setTimeout(()=>wsConnect(ip,port),5000)};ws.onmessage=ev=>{const b=new Uint8Array(ev.data);if(b[0]===0x20&&b.length>=8){state.volume=b[1]-80;let src=SRC_DISPLAY.findIndex((_,i)=>i===b[2]);state.source=(src>=0?src:0);state.relays.tw=!(b[3]&(1<<3));state.relays.mid=!(b[3]&(1<<4));state.relays.wf=!(b[3]&(1<<5));state.relays.sw=!(b[4]&(1<<0));state.vuL=b[5]/255;state.vuR=b[6]/255;state.srIdx=b[7]&3;state.dspx=true;state.wifi='WiFi OK';drawAll()}}}catch(e){}}
+if(location.protocol!=='file:') wsConnect();
+</script>
+</body>
+</html>
